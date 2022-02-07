@@ -1,0 +1,5 @@
+__pycache__
+dev
+flask_session
+app.log
+config.ini

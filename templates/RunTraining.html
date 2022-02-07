@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<body>
+    {% if training_plan_list %}
+        {% for item in training_plan_list %}
+            <p><a href="training/{{ item }}">{{ item }}</a></p>
+        {% endfor %}
+    {% endif %}
+
+    {% if calandar %}
+        {% for week in calandar.run_weeks %}
+            {% for run in week %}
+                <p>{{ run.date }} {{ run.run_type }} {{ run.plan_distance }} {{ run.actual_distance }}</p>
+            {% endfor %}
+            <hr>
+        {% endfor %}
+    {% endif %}
+</body>
