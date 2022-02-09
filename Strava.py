@@ -1,24 +1,24 @@
 from dataclasses import dataclass
 import requests
 
-
 @dataclass
-class Basic_Athlete:
-    ID: int
-    FirstName: str
-    LastName: str
+class Activity:
+    Name: str
+    Distance: float
+    MovingTime: int
+    ElapsedTime: int
+    AverageHeartrate: float
+    MaxHeartrate: float
     def __str__(self):
-        return f'{self.ID} {self.FirstName} {self.LastName}'
-
+        return f'{self.Name} {self.Distance} {self.MovingTime} {self.ElapsedTime} {self.AverageHeartrate} {self.MaxHeartrate}'
 
 @dataclass
 class Auth:
     ExpiresAt: int
     RefreshToken: str
     AccessToken: str
-    Athlete: Basic_Athlete
     def __str__(self):
-        return f'{self.ExpiresAt} {self.RefreshToken} {self.AccessToken}\n{self.Athlete}'
+        return f'{self.ExpiresAt} {self.RefreshToken} {self.AccessToken}'
 
 
 def token_exchange(client_id, client_secret, code):
@@ -33,15 +33,10 @@ def token_exchange(client_id, client_secret, code):
     res_json = res.json()
     auth = Auth(res_json['expires_at'],
                 res_json['refresh_token'],
-                res_json['access_token'],
-                Basic_Athlete(res_json['athlete']['id'],
-                              res_json['athlete']['firstname'], 
-                              res_json['athlete']['lastname'])
-                )
-    return auth
+                res_json['access_token'])
+    return str(res_json['athlete']['id']), auth
 
-# Currently unused
-#==============================================================================
+
 def refresh_token(client_id, client_secret, auth):
     auth_url = "https://www.strava.com/api/v3/oauth/token"
     payload = {

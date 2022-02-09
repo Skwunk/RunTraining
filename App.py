@@ -1,7 +1,6 @@
 import urllib
 import logging
 import configparser
-import sys
 from openpyxl import load_workbook
 from Strava import token_exchange
 from TrainingSpreadsheet import Calandar, get_training_plan
@@ -23,7 +22,7 @@ app.secret_key = config['flask']['SecretKey']
 Session(app)
 
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def index():
     return "<a href=\"/authorize\">authorize</a>"
 
@@ -35,31 +34,42 @@ def authorize_strava():
         'client_id': config['strava']['ClientID'],
         'redirect_uri': "http://jordancameron.co.uk/token",
         'response_type': "code",
-        'scope': "read_all"
+        'scope': "read_all,profile:read_all,activity:read_all"
     }
     return redirect('https://www.strava.com/oauth/authorize?{}'.format(urllib.parse.urlencode(params)))
 
 
 # Run token exchange to get athletes auth info
-@app.route("/token")
+@app.route("/token", methods=['GET'])
 def token():
     code = request.args.get('code')
     # Todo: Store auth somewhere
-    auth = token_exchange(config['strava']['ClientID'], config['strava']['ClientSecret'], code)
+    id, auth = token_exchange(config['strava']['ClientID'], config['strava']['ClientSecret'], code)
+    session[id] = auth
     return redirect('/')
 
 
-@app.route("/training")
+# Temporary path to expose auth stored in session for testing api calls outside of this app
+@app.route("/<id>/auth", methods=['GET'])
+def athlete_auth(id):
+    auth = session[id]
+    return f"{auth}"
+
+
+# Show activities associated with the athlete with id
+@app.route("/<id>/activities", methods=['GET'])
+def athlete_activities(id):
+    return ""
+
+
+# Render the list of training plans from the loaded spreadsheet
+@app.route("/training", methods=['GET'])
 def training_spreadsheet():
     return render_template("RunTraining.html", training_plan_list=workbook.sheetnames)
 
 
-@app.route("/training/<name>")
+# Render the training plan from the named sheet
+@app.route("/training/<name>", methods=['GET'])
 def training_plan(name):
     training_plan = get_training_plan(workbook, name)
     return render_template("RunTraining.html", calandar=Calandar(training_plan))
-
-
-@app.route("/shutdown")
-def shutdown():
-    sys.exit()
