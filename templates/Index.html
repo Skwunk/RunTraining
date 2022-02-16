@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<script src="https://unpkg.com/htmx.org@1.6.1"></script>
+
+<body>
+    <div id="app">
+        <button hx-get="/training"
+                hx-target="#app"
+                hx-swap="outerHTML">
+            Training
+        </button>
+    </div>
+</body>

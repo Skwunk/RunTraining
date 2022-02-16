@@ -1,0 +1,8 @@
+<div id="calander">
+    {% for week in calandar.run_weeks %}
+        {% for run in week %}
+            <p>{{ run.date }} {{ run.run_type }} {{ run.plan_distance }} {{ run.actual_distance }}</p>
+        {% endfor %}
+        <hr>
+    {% endfor %}
+</div>

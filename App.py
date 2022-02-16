@@ -24,7 +24,7 @@ Session(app)
 
 @app.route("/", methods=['GET'])
 def index():
-    return "<a href=\"/authorize\">authorize</a>"
+    return render_template("Index.html")
 
 
 # Redirect to Strava OAuth
@@ -65,11 +65,11 @@ def athlete_activities(id):
 # Render the list of training plans from the loaded spreadsheet
 @app.route("/training", methods=['GET'])
 def training_spreadsheet():
-    return render_template("RunTraining.html", training_plan_list=workbook.sheetnames)
+    return render_template("Training.html", training_plan_list=workbook.sheetnames)
 
 
 # Render the training plan from the named sheet
 @app.route("/training/<name>", methods=['GET'])
 def training_plan(name):
     training_plan = get_training_plan(workbook, name)
-    return render_template("RunTraining.html", calandar=Calandar(training_plan))
+    return render_template("Calandar.html", calandar=Calandar(training_plan))

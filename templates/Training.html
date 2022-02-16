@@ -1,0 +1,14 @@
+<div id="training">
+    {% for item in training_plan_list %}
+        <button hx-get="/training/{{item}}"
+                hx-target="#training"
+                hx-swap="outerHTML">
+            {{ item }}
+        </button>
+    {% endfor %}
+    <button hx-get="/"
+            hx-target="#training"
+            hx-swap="outerHTML">
+        Back
+    </button>
+</div>
